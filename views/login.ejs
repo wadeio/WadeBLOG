@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <!-------------->
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+     <!-------------->
+
+     <!-- Fontawesome-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" >
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.js"></script>
+     <!-------------->
+
+      <!-- CKEditor4-->
+      <script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
+     <!-------------->
+
+     <!-- Jquery DataTable-->
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css"> 
+     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+      <!-------------->
+
+
+  </head>
+  <body>
+  
+  
+    <div class="container-fluid" style="padding: 0;">
+        <div class="row mt-5 mr-5 ml-5 bg-white">
+            <div class="col-md-6">
+               <div style="max-width: 750px;">
+                    <img src="/images/wadelogo.png" style="width: 100%; margin: 50px 30px;">      
+                </div>    
+            </div>
+            <div class="col-md-1">
+            </div>
+             <div class="col-md-5">
+                <h3 class="text-primary mt-5 text-center" style="padding: 10px 15px;"> Log In</h3>
+                <div class="form-group mb-3 ml-5 mt-5">
+                    <i class="fas fa-user mr-3"></i><input type="text" class="form-control d-inline" style="width:50%;" id="account"placeholder="請輸入帳號" aria-label="Username">     
+                </div>
+                <div class="form-group mb-5 ml-5 ">
+                    <i class="fas fa-lock mr-3"></i><input type="password" class="form-control d-inline"id="password" style="width:50%;" placeholder="請輸入密碼">
+                </div>
+                <button type="button" class="btn btn-primary ml-5 mb-5" id="btn_login">登入</button>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
+
+
+
+<script>
+    $("#btn_login").click(function() {
+        var username=$("#account").val();
+        var password=$("#password").val();
+
+
+        $.ajax({ 
+            url: '/login',
+            type: 'POST',
+            cache: false, 
+            data: { account: username, password:password}, 
+            success: function(data,textStatus,request){
+            // alert('Success!'+data.result.code);
+               
+                //var token =request.getResponseHeader('token');
+                //localStorage.setItem('token', token);
+
+                if(data.result.statuscode=="200"){
+                    window.location.assign("/admin");
+                }else if(data.result.statuscode=="404"){
+                    alert("登入錯誤");
+                }else{
+                    alert("不知名錯誤");
+                }
+            }, 
+            error: function(jqXHR, textStatus, err){
+            alert('text status '+textStatus+', err '+err);
+            }
+        })
+    });
+</script>

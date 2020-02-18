@@ -1,0 +1,215 @@
+<style>
+  .counter{
+      padding: 5px 0;
+      text-align: center;
+      position: relative;
+
+  }
+  .counter .counter-value{
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.7);
+      line-height: 24px;
+      background-color: rgba(255,255,255,0.9);
+      margin-bottom: 0;
+  }
+  .title-content {
+      background: #e9e0d6;
+      border-radius: 10px;
+  }
+  .counter .title{
+      display: inline-block;
+      padding: 5px 10px;
+      background: #e9e0d6;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      text-transform: capitalize;
+      margin: 0;
+  }
+  .counter.red .title, .counter.red .title-content{ background: #29aba4; }
+  .counter.blue .title, .counter.blue .title-content{ background: #3a9ad9; }
+</style>
+<article class="position-fixed mt-5">
+                <div class="card" style="width: 18rem; border-radius: 10px;">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary" ><i class="fab fa-fort-awesome-alt"></i>  熱門文章</h5>
+                      <hr style="margin: 1em -20px;">
+                      <p class="card-text"  id="hotblock"></p>
+
+                    </div>
+                  </div>
+
+                  <div class="card mt-2" style="width: 18rem; border-radius: 10px;">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary"><i class="fas fa-tags"></i>  分類</h5>
+                      <hr style="margin: 1em -20px;">
+                      <p class="card-text" id="categoryblock">
+                        </p>
+                    </div>
+                  </div>
+                  <div class="row mt-1" style="width: 20rem; ">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="counter">
+                            <div class="title-content">
+                                <p class="counter-value" id="dayguestviews"></p>
+                                <h5 class="title">今日到訪人數</h5>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-8 offset-md-2">
+                        <div class="counter red">
+                            <div class="title-content">
+                                <p class="counter-value"  id="weekguestviews"></p>
+                                <h5 class="title">本週到訪人次</h5>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-8 offset-md-2">
+                        <div class="counter blue">
+                            <div class="title-content">
+                                <p class="counter-value" id="allguestviews"></p>
+                                <h5 class="title">總計到訪人潮</h5>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+</article>
+<script  src="http://code.jquery.com/jquery-1.12.4.min.js"  ></script>
+<script>
+
+//瀏覽人數
+$.ajax({ 
+    url: '/getguestall',
+    type: 'GET',
+    cache: false, 
+    success: function(data){
+        //console.log(data);
+        var viewsnumber=data.result[0].views;
+       
+        $("#allguestviews").text(viewsnumber);
+        console.log(viewsnumber);
+    }, 
+    error: function(jqXHR, textStatus, err){
+        alert('text status '+textStatus+', err '+err);
+    }
+});
+
+$.ajax({ 
+    url: '/getguestweek',
+    type: 'GET',
+    cache: false, 
+    success: function(data){
+        //console.log(data);
+        var viewsnumber=data.result[0].views;
+       
+        $("#weekguestviews").text(viewsnumber);
+        console.log(viewsnumber);
+    }, 
+    error: function(jqXHR, textStatus, err){
+        alert('text status '+textStatus+', err '+err);
+    }
+});
+
+$.ajax({ 
+    url: '/getguestday',
+    type: 'GET',
+    cache: false, 
+    success: function(data){
+        //console.log(data);
+        var viewsnumber=data.result[0].views;
+       
+        $("#dayguestviews").text(viewsnumber);
+        console.log(viewsnumber);
+    }, 
+    error: function(jqXHR, textStatus, err){
+        alert('text status '+textStatus+', err '+err);
+    }
+});
+
+
+setTimeout(function(){   $(function(){
+        $('.counter-value').each(function(){
+            $(this).prop('Counter',0).animate({
+                Counter: $(this).text()
+            },{
+                duration: 1500,
+                easing: 'swing',
+                step: function (now){
+                    $(this).text(Math.ceil(now));
+                }
+            });
+        });
+        // $('.counter-value').each(function(){
+        //     $(this).prop('Counter',0).animate({
+        //         duration: 3500,
+        //         easing: 'swing'}, 
+        //         {
+        //             step: function( now, fx ) {
+        //                 $(this).text(Math.ceil(now));
+        //             }
+        //         }
+        //     );
+        // });
+    });
+},500);
+
+  
+</script>
+
+<script>
+
+$.ajax({ 
+    url: '/getcategory',
+    type: 'GET',
+    data:{"id":id},
+    cache: false, 
+    success: function(data){
+        //console.log(data);
+        var arr=data.result.categorydata;
+        let str="";
+        arr.forEach(element => {
+          var paracategory=element.category;
+          str+='<a class="btn btn-primary btn-sm mb-1 mr-1" href="/listarticle?q='+paracategory+'"><i class="fas fa-tag"></i> '+element.category+'</a>';
+      
+        });
+
+        $("#categoryblock").append(str);
+        
+      
+    }, 
+    error: function(jqXHR, textStatus, err){
+        alert('text status '+textStatus+', err '+err);
+    }
+});
+
+//id 是 subject 主題索引變數 在content.ejs
+$.ajax({ 
+    url: '/gethotarticle',
+    type: 'GET',
+    data:{"id":id},
+    cache: false, 
+    success: function(data){
+        //console.log(data);
+        var arr=data.result.categorydata;
+        let str="";
+        arr.forEach(element => {
+          str+='<a class="article-list-item" href="/article?q='+element.id+'&s='+element.subject+'">'+element.title+'</a>'      
+        });
+
+        $("#hotblock").append(str);
+        
+      
+    }, 
+    error: function(jqXHR, textStatus, err){
+        alert('text status '+textStatus+', err '+err);
+    }
+});
+
+</script>
+
+

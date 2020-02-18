@@ -1,0 +1,98 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+<div class="container">
+  <a class="navbar-brand" href="/index" style="max-width: 120px;"><img src="/images/wadelogo.png" style="width: 100%;"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/index?q=hightech">科技產品</a>
+      </li>
+      <!--
+      <li class="nav-item active">
+        <a class="nav-link" href="/">技術文章 <span class="sr-only">(current)</span></a>
+      </li>-->
+      <li class="nav-item">
+        <a class="nav-link" href="/index?q=technology">技術文章</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/index?q=invest">投資理財</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/index?q=enhance">自我提升</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/index?q=blogmanage">部落格經營</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/about">關於部落格</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/donate">贊助我</a>
+      </li>
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0">
+      <input id="keyword" class="form-control mr-sm-2" type="search" placeholder="搜索文章" aria-label="Search">
+      <button id="querykeyword" class="btn btn-outline-secondary my-2 my-sm-0" type="button">
+        <i class="fas fa-search"></i>
+      </button>
+    </form>
+  </div>
+</div>
+ 
+</nav>
+
+
+<script>
+$(document).ready(function() {
+  $(".nav-item").each(function(){
+    if($(this).find('a').text() == localStorage.getItem('loc'))
+      $(this).addClass('active');
+  })
+});
+$(".nav-item").click(function(){
+  localStorage.setItem('loc', $(this).find('a').text());  
+});
+
+$("#querykeyword").click(function(){
+     let kew= $("#keyword").val();
+     console.log("關鍵字查詢");
+     $.ajax({ 
+        url: '/articlekeyword',
+        type: 'GET',
+        data:{q:kew},
+        cache: false, 
+        success: function(result){
+         // alert('Success!'+data.result.code);
+         let str="";
+         result.data.forEach(element => {
+          var imgattr=element.img_name;
+           str+= '<div class="row">'+
+                  '<div class="col-md-9">'+
+                      '<h5 style="padding: 10px 15px;" class="article-list-title"><a class="article-list-item"'+ 'href='+"/article?q="+element.id+'>'+element.title+'</a></h5><div class="p_con">'+
+                      element.content+
+                      '</div><a class="btn btn-primary btn-sm ml-3 mb-3 tagformat float-left" href="/listarticle?q='+element.category+'"><i class="fas fa-tag"></i>'+ element.category+'</a>'+
+                      '<p class="float-left ml-3 mt-1 text-secondary"><i class="fas fa-user"></i>  '+ element.author+'</p>'+
+                      '<p class="float-left ml-3 mt-1 text-secondary"><i class="fas fa-eye"></i>  '+ element.views+'</p>'+
+                      '<p class="float-left ml-3 mt-1 text-secondary"><i class="far fa-calendar-alt"></i> '+ formatDateTime(new Date(element.createdate))+'</p>'+
+                  '</div>'+
+                  '<div class="col-md-3 pl-0">'+
+                      '<img class="figure-img img-fluid rounded mt-4 pr-3" id="coverimg" src="data:image/'+ imgattr.split('.')[1]+';base64,'+element.img+'">'+
+                  '</div>'+  
+                '</div>'+
+                '<hr>'
+         });
+           
+         $("#listarticle").html(str);
+
+
+        }, 
+        error: function(jqXHR, textStatus, err){
+          alert('text status '+textStatus+', err '+err);
+        }
+      })
+});
+</script>

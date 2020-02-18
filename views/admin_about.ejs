@@ -1,0 +1,76 @@
+<div class="container">
+    <div class="bg-white mt-5 ">
+        <h5 class="text-primary" style="padding: 10px 15px;"><i class="fas fa-th-list"></i>  編輯關於頁</h5>
+        <hr style="margin-top: -5px;">
+        <div>
+            <form >
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="form-group mb-3 ml-3">
+                            <input type="text" class="form-control" id="abouttitle"placeholder="請輸入標題" aria-label="Username">     
+                        </div>
+                    </div>     
+                    <div class="col-md-3">
+                        <button id="save">儲存修改</button>
+                    </div> 
+                    <div class="col-md-11 ml-3">
+                        <textarea name="editor"></textarea>
+                    
+                    </div>
+                </div>
+            
+            </form>
+            
+            <hr>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+
+
+    CKEDITOR.replace( 'editor');
+    let TextAboutTitle = document.getElementById('abouttitle');
+  
+
+    $.ajax({ 
+        url: '/getabout',
+        type: 'GET',
+        cache: false, 
+        success: function(data){
+         // alert('Success!'+data.result.code);
+         //console.log(data.result[0].title);
+         //console.log(data);
+         TextAboutTitle.value=data.result[0].title;
+         CKEDITOR.instances.editor.setData(data.result[0].content);
+            //alert("查詢成功");
+        }, 
+        error: function(jqXHR, textStatus, err){
+          alert('text status '+textStatus+', err '+err);
+        }
+      })
+    
+    $("#save").click(function() {
+        var data = CKEDITOR.instances.editor.getData();
+        $.ajax({ 
+        url: '/updateabout',
+        type: 'POST',
+        cache: false, 
+        data: { title: TextAboutTitle.value, content:data}, 
+        success: function(data){
+         // alert('Success!'+data.result.code);
+            alert("修改成功");
+        }, 
+        error: function(jqXHR, textStatus, err){
+          alert('text status '+textStatus+', err '+err);
+        }
+      })
+      
+    });
+    
+  
+
+</script>

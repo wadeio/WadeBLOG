@@ -1,0 +1,39 @@
+<div class="bg-white mt-5">
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-center mt-5"><img src="/images/wadelogo.png" style="max-width: 320px;"></p>
+                <h3 class="mb-5" id="abouttitle" style="padding: 10px 15px; text-align:center;"></h3>
+                <p id="aboutcontent" class="text-secondary ml-5 mr-5"></p>
+            </div>
+        </div>
+        <hr>
+       
+    </div>
+</div>
+
+
+<script>
+    
+
+    let TextAboutTitle = document.getElementById('abouttitle');
+    let TextAboutContent = document.getElementById('aboutcontent');
+
+    $.ajax({ 
+        url: '/getabout',
+        type: 'GET',
+        cache: false, 
+        success: function(data){
+         // alert('Success!'+data.result.code);
+         console.log(data.result[0].title);
+         console.log(data);
+         TextAboutTitle.innerText=data.result[0].title;
+         TextAboutContent.innerHTML=data.result[0].content;
+            //alert("查詢成功");
+        }, 
+        error: function(jqXHR, textStatus, err){
+          alert('text status '+textStatus+', err '+err);
+        }
+      })
+
+</script>

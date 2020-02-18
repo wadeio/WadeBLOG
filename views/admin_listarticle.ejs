@@ -1,0 +1,343 @@
+<div class="container-fluid">
+    <div class="bg-white mt-5 ">
+        <h5 class="text-primary" style="padding: 10px 15px;"><i class="fas fa-th-list"></i>  文章列表</h5>
+        <hr style="margin-top: -5px;">
+        <div>
+            <form >
+                <div class="row">
+                    <div class="col-md-11  ml-5">
+                        <table id="table_id" class="table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>標題</th>
+                                    <th>作者</th>
+                                    <th>主題</th>
+                                    <th>分類</th>
+                                    <th>觀看數</th>
+                                    <th>創立時間</th>
+                                    <th>顯示狀態</th>
+                                    <th>動作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>     
+                </div>
+            
+            </form>
+            
+            <hr>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">編輯文章</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-9">
+                    <form id="articleForm" method="POST" enctype="multipart/form-data">
+                        <div class="form-group mb-3 ml-3">
+                            <label>請選擇文章主題 ：</label>
+                            <select id="subjectlist" name="subject">
+                            </select>
+                        </div>
+                        <div class="form-group mb-3 ml-3">
+                            <input type="text" class="form-control" id="articletitle" name="title" placeholder="請輸入標題" aria-label="Username">     
+                        </div>
+                        <div class="form-group mb-3 ml-3">
+                            <input type="text" class="form-control"id="articlecategory" name="category" placeholder="請輸入標籤類型">
+                        </div>
+                        <div class="form-group mb-3 ml-3">
+                            <input type="file" class="form-control" name="file" id="articleimg" placeholder="封面圖片" onchange="previewpic($(this))">
+                        </div>
+                    </form>
+                </div>     
+                <div class="col-md-3">
+                    <img id="coverimg" style="max-width: 200px; margin-top: 20px; margin-left: 20px;">
+                </div> 
+                <div class="col-md-12 ml-1">
+                    <textarea name="editor"></textarea>
+                
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+          <button type="button" class="btn btn-primary" id="editconfirm">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Switch Modal -->
+<div class="modal fade" id="switchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">顯示狀態設定</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                <label class="custom-control-label" for="customSwitch1">是否發佈</label>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+          <button type="button" class="btn btn-primary" id="switchconfirm">確定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<script>
+
+$.ajax({ 
+        url: '/getsubjects',
+        type: 'GET',
+        cache: false, 
+        success: function(result){
+            var optionstring="";
+            //console.log(result);
+            // alert('Success!'+data.result.code);
+            result.data.forEach(element => {
+                optionstring += "<option value=\"" + element.id + "\" >" +  element.name + "</option>";
+            });
+            $("#subjectlist").html("<option value=''>===請選擇===</option> "+optionstring); 
+            
+        }, 
+        error: function(jqXHR, textStatus, err){
+          alert('text status '+textStatus+', err '+err);
+        }
+      });
+
+    $(document).ready( function () {
+
+          table=$('#table_id').DataTable({
+            "bProcessing": true,
+            "sAjaxSource": "/getlistarticle",
+            "fnServerParams": function (aoData){ 
+                    aoData.push({ "name": "subject", "value": 0}); 
+                },
+            "aoColumns": [
+                { "mData": "id", "sWidth": '5%'},
+                { "mData": "title", "sWidth": '20%'},
+                { "mData": "author", "sWidth": '8%'},
+                { "mData": "subjectname", "sWidth": '10%'},
+                { "mData": "category", "sWidth": '10%'},
+                { "mData": "views", "sWidth": '9%'},
+                { "mData": "createdate", "sWidth": '8%'},
+                { "mData": "status", "sWidth": '12%'},
+                { "mData": "id", "sWidth": '18%',
+
+                "mRender":function(val,type,row) {
+                    
+                    return "<button class='btn btn-warning btn-circle  text-white' data-toggle='modal' data-target='#editModal' onclick='loadEditData(\""+val.toString()+"\")' type='button'><i class='fas fa-pencil-alt'></i></button> &nbsp<button class='btn btn-info btn-circle' data-toggle='modal' data-target='#switchModal' onclick='loadDataEvent(\""+val.toString()+"\")' type='button'><i class='fas fa-cog'></i></button> &nbsp<button class='btn btn-danger btn-circle' onclick='deleteEvent(\""+val.toString()+"\")' type='button'><span class='fa fa-trash' aria-hidden='true' ></span></button>";
+                  }
+            
+            
+            
+                }
+            ],
+            "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+                $(nRow).attr("data-id",aData.ser);
+                return nRow;
+            },
+            "language": {
+                "processing": "資料載入中...",
+                "lengthMenu": "每頁顯示 _MENU_ 筆",
+                "zeroRecords": "資料庫中未有相關資料。",
+                "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+                "infoEmpty": "資料庫中未有相關資料。",
+                "search":  "搜尋:",
+                "paginate": {
+                      "first":      "第一頁",
+                      "last":       "最後一頁",
+                      "next":       "下一頁",
+                      "previous":   "上一頁"
+                  }
+            }
+        });
+    } );
+
+    CKEDITOR.replace( 'editor');
+
+   // let TextAboutTitle = document.getElementById('abouttitle');
+    //let TextAboutContent = document.getElementById('aboutcontent');
+
+      nowid=null; 
+      function loadDataEvent(val){
+        nowid=val;
+        $.ajax({ 
+                url: '/getarticlestatus',
+                type: 'POST',
+                data:{"id":val},
+                cache: false, 
+                success: function(data){
+                    var statusid=data.result.answer;
+
+                    if(statusid=="Y"){
+                        $("#customSwitch1").prop("checked", true);
+                    }else{
+                        $("#customSwitch1").prop("checked", false);
+                    }
+                
+                }, 
+                error: function(jqXHR, textStatus, err){
+                    alert('text status '+textStatus+', err '+err);
+                }
+            });
+      }
+
+      function loadEditData(val){
+        nowid=val;
+        $.ajax({ 
+                url: '/getarticle',
+                type: 'POST',
+                data:{"id":val},
+                cache: false, 
+                success: function(data){
+                    //console.log(data);
+                    var imgattr=data.result[0].img_name;
+                    $("#articletitle").val(data.result[0].title);
+                    $("#articlecategory").val(data.result[0].category);
+                    //console.log(data.result[0].img);
+                    var src="data:image/"+ imgattr.split('.')[1]+";base64,"+data.result[0].img;
+                    $("#coverimg").attr('src', src);
+                    $("#subjectlist").val(data.result[0].subject);
+
+                    CKEDITOR.instances.editor.setData(data.result[0].content);
+                }, 
+                error: function(jqXHR, textStatus, err){
+                    alert('text status '+textStatus+', err '+err);
+                }
+            });
+      }
+
+      function deleteEvent(val){
+        nowid=val;
+          if(confirm("確定要刪除嗎?")){
+                $.ajax({ 
+                url: '/removearticle',
+                type: 'POST',
+                data:{"id":val},
+                cache: false, 
+                success: function(data){
+                    table.ajax.reload();
+                    //alert("刪除成功");
+                }, 
+                error: function(jqXHR, textStatus, err){
+                alert('text status '+textStatus+', err '+err);
+                }
+                 });
+         }
+      }
+
+  
+
+  $(document).on('show.bs.modal','#switchModal', function () {
+     //alert('hi');
+  });
+
+ 
+$("#switchconfirm").click(function(){
+    //console.log("點擊");
+    //console.log(nowid);
+    var statusid="";
+    if($("#customSwitch1").prop("checked")){
+        //console.log("開啟");
+        statusid="Y";
+    }else{
+        //console.log("關閉");
+        statusid="N";
+    }
+    
+    $.ajax({ 
+         url: '/uarticlestatus',
+         type: 'POST',
+         data:{"id":nowid,"status":statusid},
+         cache: false, 
+         success: function(data){
+            table.ajax.reload(); 
+         }, 
+         error: function(jqXHR, textStatus, err){
+             alert('text status '+textStatus+', err '+err);
+         }
+    });
+   
+    $('#switchModal').modal('hide');
+});
+
+$("#editconfirm").click(function(){
+
+    
+    //console.log(nowid);
+    //title cate content id 
+    var at=$("#articletitle").val();
+    var ac=$("#articlecategory").val();
+    var data = CKEDITOR.instances.editor.getData();  
+    var formData=new FormData($("#articleForm")[0]);
+    formData.append("content",data);
+    formData.append("id",nowid);
+    //{"id":nowid,"title":at,"category":ac,"content":data},
+    $.ajax({ 
+         url: '/updatearticle',
+         type: 'POST',
+         data:formData,
+         cache: false, 
+         processData: false,
+         contentType : false,
+         success: function(data){
+            table.ajax.reload(); 
+         }, 
+         error: function(jqXHR, textStatus, err){
+             alert('text status '+textStatus+', err '+err);
+         }
+    });
+    
+    $("#articleimg").val("");
+    $('#editModal').modal('hide');
+});
+
+
+
+
+function previewpic(obj){
+  
+    if(obj[0].files && obj[0].files[0]){
+        var readerimg = new FileReader();
+        var img = new Image();
+        var w=0,h=0,s=0;
+        readerimg.onload = function (e) {
+            img.src = e.target.result
+            s = e.total;
+        }
+        readerimg.readAsDataURL(obj[0].files[0]);
+        img.onload = function() {
+            w = this.width;
+            h = this.height;
+            $("#coverimg").attr('src', img.src);
+        }
+
+    }
+} 
+
+</script>
+
+
+
+

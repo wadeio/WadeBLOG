@@ -1,0 +1,267 @@
+<div class="container-fluid">
+    <div class="bg-white mt-5">
+        <h5 class="text-primary" style="padding: 10px 15px;"><i class="fas fa-th-list"></i>  觀看點閱數</h5>
+        <hr style="margin-top: -5px;">
+        <div>
+            <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="text-warning text-center">科技產品</h4>
+                        <table id="table_id1" class="table">
+                            <thead>
+                                <tr>
+                                    <th></th> 
+                                    <th>文章標題</th>
+                                    <th>文章分類</th>
+                                    <th>創立時間</th>
+                                    <th>總瀏覽數</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>     
+                    <div class="col-md-6">
+                        <h4 class="text-warning text-center">技術文章</h4>
+                        <table id="table_id2" class="table">
+                            <thead>
+                                <tr>
+                                    <th></th> 
+                                    <th>文章標題</th>
+                                    <th>文章分類</th>
+                                    <th>創立時間</th>
+                                    <th>總瀏覽數</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>  
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-warning text-center">投資理財</h4>
+                    <table id="table_id3" class="table">
+                        <thead>
+                            <tr>
+                                <th></th> 
+                                <th>文章標題</th>
+                                <th>文章分類</th>
+                                <th>創立時間</th>
+                                <th>總瀏覽數</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>     
+                <div class="col-md-6">
+                    <h4 class="text-warning text-center">自我提升</h4>
+                    <table id="table_id4" class="table">
+                        <thead>
+                            <tr>
+                                <th></th> 
+                                <th>文章標題</th>
+                                <th>文章分類</th>
+                                <th>創立時間</th>
+                                <th>總瀏覽數</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>  
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text-warning text-center">部落格經營</h4>
+                    <table id="table_id5" class="table">
+                        <thead>
+                            <tr>
+                                <th></th> 
+                                    <th>文章標題</th>
+                                    <th>文章分類</th>
+                                    <th>創立時間</th>
+                                    <th>總瀏覽數</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>     
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+$(document).ready( function () {
+
+
+
+    table1=$('#table_id1').DataTable({
+  "bProcessing": true,
+  "sAjaxSource": "/gethotarticle",
+  "fnServerParams": function (aoData){ 
+          aoData.push({ "name": "id", "value": 1}); 
+      },
+  "aoColumns": [
+      { "mData": "id", "sWidth": '10%'},
+      { "mData": "title", "sWidth": '20%'},
+      { "mData": "category", "sWidth": '30%'},
+      { "mData": "createdate", "sWidth": '20%'},
+      { "mData": "views", "sWidth": '20%'}
+  ],
+  "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+      $(nRow).attr("data-id",aData.ser);
+      return nRow;
+  },
+  "language": {
+      "processing": "資料載入中...",
+      "lengthMenu": "每頁顯示 _MENU_ 筆",
+      "zeroRecords": "資料庫中未有相關資料。",
+      "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+      "infoEmpty": "資料庫中未有相關資料。",
+      "search":  "搜尋:",
+      "paginate": {
+            "first":      "第一頁",
+            "last":       "最後一頁",
+            "next":       "下一頁",
+            "previous":   "上一頁"
+        }
+  }
+});
+
+
+table2=$('#table_id2').DataTable({
+  "bProcessing": true,
+  "sAjaxSource": "/gethotarticle",
+  "fnServerParams": function (aoData){ 
+          aoData.push({ "name": "id", "value": 2}); 
+      },
+  "aoColumns": [
+      { "mData": "id", "sWidth": '10%'},
+      { "mData": "title", "sWidth": '20%'},
+      { "mData": "category", "sWidth": '30%'},
+      { "mData": "createdate", "sWidth": '20%'},
+      { "mData": "views", "sWidth": '20%'}
+  ],
+  "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+      $(nRow).attr("data-id",aData.ser);
+      return nRow;
+  },
+  "language": {
+      "processing": "資料載入中...",
+      "lengthMenu": "每頁顯示 _MENU_ 筆",
+      "zeroRecords": "資料庫中未有相關資料。",
+      "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+      "infoEmpty": "資料庫中未有相關資料。",
+      "search":  "搜尋:",
+      "paginate": {
+            "first":      "第一頁",
+            "last":       "最後一頁",
+            "next":       "下一頁",
+            "previous":   "上一頁"
+        }
+  }
+});
+table3=$('#table_id3').DataTable({
+  "bProcessing": true,
+  "sAjaxSource": "/gethotarticle",
+  "fnServerParams": function (aoData){ 
+          aoData.push({ "name": "id", "value": 3}); 
+      },
+  "aoColumns": [
+      { "mData": "id", "sWidth": '10%'},
+      { "mData": "title", "sWidth": '20%'},
+      { "mData": "category", "sWidth": '30%'},
+      { "mData": "createdate", "sWidth": '20%'},
+      { "mData": "views", "sWidth": '20%'}
+  ],
+  "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+      $(nRow).attr("data-id",aData.ser);
+      return nRow;
+  },
+  "language": {
+      "processing": "資料載入中...",
+      "lengthMenu": "每頁顯示 _MENU_ 筆",
+      "zeroRecords": "資料庫中未有相關資料。",
+      "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+      "infoEmpty": "資料庫中未有相關資料。",
+      "search":  "搜尋:",
+      "paginate": {
+            "first":      "第一頁",
+            "last":       "最後一頁",
+            "next":       "下一頁",
+            "previous":   "上一頁"
+        }
+  }
+});
+table4=$('#table_id4').DataTable({
+  "bProcessing": true,
+  "sAjaxSource": "/gethotarticle",
+  "fnServerParams": function (aoData){ 
+          aoData.push({ "name": "id", "value": 4}); 
+      },
+  "aoColumns": [
+      { "mData": "id", "sWidth": '10%'},
+      { "mData": "title", "sWidth": '20%'},
+      { "mData": "category", "sWidth": '30%'},
+      { "mData": "createdate", "sWidth": '20%'},
+      { "mData": "views", "sWidth": '20%'}
+  ],
+  "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+      $(nRow).attr("data-id",aData.ser);
+      return nRow;
+  },
+  "language": {
+      "processing": "資料載入中...",
+      "lengthMenu": "每頁顯示 _MENU_ 筆",
+      "zeroRecords": "資料庫中未有相關資料。",
+      "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+      "infoEmpty": "資料庫中未有相關資料。",
+      "search":  "搜尋:",
+      "paginate": {
+            "first":      "第一頁",
+            "last":       "最後一頁",
+            "next":       "下一頁",
+            "previous":   "上一頁"
+        }
+  }
+});
+
+table5=$('#table_id5').DataTable({
+  "bProcessing": true,
+  "sAjaxSource": "/gethotarticle",
+  "fnServerParams": function (aoData){ 
+          aoData.push({ "name": "id", "value": 5}); 
+      },
+  "aoColumns": [
+      { "mData": "id", "sWidth": '10%'},
+      { "mData": "title", "sWidth": '20%'},
+      { "mData": "category", "sWidth": '30%'},
+      { "mData": "createdate", "sWidth": '20%'},
+      { "mData": "views", "sWidth": '20%'}
+  ],
+  "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+      $(nRow).attr("data-id",aData.ser);
+      return nRow;
+  },
+  "language": {
+      "processing": "資料載入中...",
+      "lengthMenu": "每頁顯示 _MENU_ 筆",
+      "zeroRecords": "資料庫中未有相關資料。",
+      "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+      "infoEmpty": "資料庫中未有相關資料。",
+      "search":  "搜尋:",
+      "paginate": {
+            "first":      "第一頁",
+            "last":       "最後一頁",
+            "next":       "下一頁",
+            "previous":   "上一頁"
+        }
+  }
+});
+
+
+
+} );
+
+
+
+
+
+</script>

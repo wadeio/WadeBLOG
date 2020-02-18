@@ -1,0 +1,143 @@
+<div class="container">
+    <div class="bg-white mt-5 ">
+        <h5 class="text-primary" style="padding: 10px 15px;"><i class="fas fa-th-list"></i>  新增文章</h5>
+        <hr style="margin-top: -5px;">
+        <div>
+          
+                <div class="row">
+                    <div class="col-md-9">
+                        <form id="articleForm" method="POST" enctype="multipart/form-data">
+                            <div class="form-group mb-3 ml-3">
+                                <label>請選擇文章主題 ：</label>
+                                <select id="subjectlist" name="subject">
+                                </select>
+                            </div>
+                            <div class="form-group mb-3 ml-3">
+                                <input type="text" class="form-control" name="title" id="articletitle"placeholder="請輸入標題" aria-label="Username">     
+                            </div>
+                            <div class="form-group mb-3 ml-3">
+                                <input type="text" class="form-control" name="category" id="articlecategory" placeholder="請輸入標籤類型">
+                            </div>
+                            <div class="form-group mb-3 ml-3">
+                                <input type="file" class="form-control" name="file" id="articleimg" placeholder="封面圖片" onchange="previewpic($(this))">
+                            </div>
+                        </form>
+                    </div>     
+                    <div class="col-md-3">
+                        <button id="draft">儲存草稿</button>
+                        <button id="publish">發佈文章</button>
+                        <img id="coverimg" style="max-width: 200px; margin-top: 20px; margin-left: 20px;">
+                    </div> 
+                    <div class="col-md-11 ml-3">
+                        <textarea name="editor"></textarea>
+                    
+                    </div>
+                </div>
+            
+            
+            
+            <hr>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+$.ajax({ 
+        url: '/getsubjects',
+        type: 'GET',
+        cache: false, 
+        success: function(result){
+            var optionstring="";
+            //console.log(result);
+            // alert('Success!'+data.result.code);
+            result.data.forEach(element => {
+                optionstring += "<option value=\"" + element.id + "\" >" +  element.name + "</option>";
+            });
+            $("#subjectlist").html("<option value=''>===請選擇===</option> "+optionstring); 
+            
+        }, 
+        error: function(jqXHR, textStatus, err){
+          alert('text status '+textStatus+', err '+err);
+        }
+      });
+
+CKEDITOR.replace( 'editor',
+        {
+            // extraPlugins: 'uploadimage',
+            // uploadUrl: '/images/ckeditor-imgs',
+            image_previewText:'',
+            filebrowserImageUploadUrl: '/admin/uploadify',
+        });
+let TextArticleTitle = document.getElementById('articletitle');
+let TextArticleCategory = document.getElementById('articlecategory');
+//var data=getDataFromTheEditor();
+
+
+$("#publish").click(function() {
+    var data = CKEDITOR.instances.editor.getData();
+    var formData=new FormData($("#articleForm")[0]);
+    formData.append("content",data);
+ //{ title: TextArticleTitle.value, content:data,category:TextArticleCategory.value}, 
+    $.ajax({ 
+    url: '/addarticle',
+    type: 'POST',
+    cache: false, 
+    data: formData,
+    processData: false,
+    contentType : false,
+    success: function(data){
+     // alert('Success!'+data.result.code);
+        alert("新增成功");
+    }, 
+    error: function(jqXHR, textStatus, err){
+      alert('text status '+textStatus+', err '+err);
+    }
+  })
+  
+});
+
+$("#draft").click(function() {
+    var data = CKEDITOR.instances.editor.getData();
+    var formData=new FormData($("#articleForm")[0]);
+    formData.append("content",data);
+    //{ title: TextArticleTitle.value, content:data,category:TextArticleCategory.value}, 
+    $.ajax({ 
+    url: '/adddraft',
+    type: 'POST',
+    cache: false, 
+    data: formData, 
+    processData: false,
+    contentType : false,
+    success: function(data){
+     // alert('Success!'+data.result.code);
+        alert("新增成功");
+    }, 
+    error: function(jqXHR, textStatus, err){
+      alert('text status '+textStatus+', err '+err);
+    }
+  })
+  
+});
+ 
+function previewpic(obj){
+    if(obj[0].files && obj[0].files[0]){
+        var readerimg = new FileReader();
+        var img = new Image();
+        var w=0,h=0,s=0;
+        readerimg.onload = function (e) {
+            img.src = e.target.result
+            s = e.total;
+        }
+        readerimg.readAsDataURL(obj[0].files[0]);
+        img.onload = function() {
+            w = this.width;
+            h = this.height;
+            $("#coverimg").attr('src', img.src);
+        }
+
+    }
+} 
+
+</script>

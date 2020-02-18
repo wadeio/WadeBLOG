@@ -1,0 +1,383 @@
+<style>
+     .article-list-item:hover {
+    color: #409EFF;
+  }
+
+  .article-list-item {
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    transition: 0.1s ease-in;
+    color:#000000;
+  }
+
+  .article-list-item:hover {
+    text-decoration: none;
+  }
+</style>
+<div class="bg-white mt-5">
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3 style="padding: 10px 15px; text-align:center; padding:40px 0px;" id="articletitle"></h3>
+                <a class="btn btn-primary btn-sm ml-5 mb-3 tagformat float-left" id="articlecategory"><i class="fas fa-tag"></i> </a>
+                <p class="float-left ml-3 mt-1 text-secondary" id="author"><i class="fas fa-user"></i> </p>
+                <p class="float-left ml-3 mt-1 text-secondary" id="views"><i class="fas fa-eye"></i> </p>
+                <p class="float-left ml-3 mt-1 text-secondary" id="creatdate"><i class="far fa-calendar-alt"></i></p>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-md-12 text-center" >
+                <img class="figure-img img-fluid rounded float-none" id="coverimg">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-secondary ml-5 mr-5 mt-5" id="content"></p>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="ml-2">Responses to</h6>
+            </div>
+        </div>
+        
+            <!--
+        <div class="row">
+            
+            <div class="col-md-12">
+                <div class="float-left">
+                    <img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">
+                </div>
+                <div class="float-left">
+                    <p class="h6">Nicky表示:<br/>
+                        <small class="text-muted">2020-02-05 16:23</small>
+                    </p>
+                    <p class="">是在哈囉！
+                        <br/><small><a href="#" onclick="replay($(this))" class="text-decoration-none">回覆</a></small>
+                    </p>
+                    
+                </div>
+            </div>
+        
+            <div class="col-md-8 offset-md-2 px-0">
+                <div class="float-left">
+                    <img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">
+                </div>
+                <div class="float-left">
+                    <p class="h6">Nicky表示:<br/>
+                        <small class="text-muted">2020-02-05 16:23</small>
+                    </p class="h6">
+                    <p class="">是在哈囉！
+                        <br/><small><a href="#" class="text-decoration-none">回覆</a></small>
+                    </p>
+                    
+                </div>                
+            </div>
+            <div class="col-md-8 offset-md-2 px-0">
+                <div class="float-left">
+                    <img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">
+                </div>
+                <div class="float-left">
+                    <p class="h6">Nicky表示:<br/>
+                        <small class="text-muted">2020-02-05 16:23</small>
+                    </p class="h6">
+                    <p class="">是在哈囉！
+                        <br/><small><a href="#" class="text-decoration-none">回覆</a></small>
+                    </p>
+                    
+                </div>                
+            </div>
+            <div class="col-md-12">
+            <hr>
+            </div>
+        </div>-->
+        <div  class="row" id="commentblock">
+            
+        </div>
+        
+
+       
+        <div class="row">
+            <div class="col-md-12" id="messageblock">
+                <div class="col-md-12">
+                    <h6 class="ml-2">發佈留言</h6>
+                    <p>發佈留言必須填寫的電子郵件地址不會公開。 必填欄位標示為 *</p>
+                </div>
+                <div class="col-md-8">
+                    <form >
+                        <div class="form-group mb-3 ml-3">
+                            <label>留言</label>
+                            <textarea class="form-control" placeholder="請輸入留言內容" id="commentcontent" name="content" cols="45" rows="8" maxlength="65525" required="required"></textarea>
+                        </div>
+                        <div class="form-group mb-3 ml-3">
+                            <label>顯示名稱</label>
+                            <input type="text" class="form-control" name="name" id="commentname" placeholder="請輸入顯示名稱">
+                        </div>
+                        <div class="form-group mb-3 ml-3">
+                            <label>電子郵件地址</label>
+                            <input type="text" class="form-control" name="eamil" id="commentemail" placeholder="請輸入電子郵件">
+                        </div>
+                    
+                    </form >
+                    <button class="btn btn-primary btn-sm ml-3" onclick="message($(this))">發佈留言</button>
+                </div>
+                <div class="col-md-4">   
+                </div>
+                <hr>
+            </div>
+        </div>
+       
+       
+    </div>
+</div>
+
+<script>
+    let url = location.href;
+    let arr;
+    let key;
+    let value;
+    let id=0;
+    if(url.indexOf('?')!=-1)
+    { 
+    
+       arr=url.split('?')[1];
+       arr=url.split('&')[0];
+       //subject
+       arr1=url.split('&')[1];
+       id=arr1.split('=')[1];
+
+       key=arr.split('=')[0];
+       value=arr.split('=')[1];
+    
+    }
+ 
+
+      $.ajax({ 
+        url: '/getarticle',
+        type: 'POST',
+        data:{"id":value},
+        cache: false, 
+        success: function(data){
+            //console.log(data);
+            $("#articletitle").text(data.result[0].title);
+            var imgbase64="data:image/"+data.result[0].img_name.split('.')[1]+";base64,"+data.result[0].img;
+            $("#coverimg").attr('src', imgbase64);//"https://picsum.photos/300"
+            $("#articlecategory").attr("href","/listarticle?q="+data.result[0].category);
+            $("#articlecategory").text(data.result[0].category);
+            $("#author").append(data.result[0].author);
+            //$("#views").append(data.result[0].views);
+            var date=formatDateTime(new Date(data.result[0].createdate));
+            $("#creatdate").append(date);
+            $("#content").html(data.result[0].content);
+
+                $.ajax({ 
+                    url: '/uarticleviews',
+                    type: 'POST',
+                    data:{"id":value,"views":data.result[0].views+1},
+                    cache: false, 
+                    success: function(data){
+                        $("#views").append(data.result.articleData.views);
+                        
+                    }, 
+                    error: function(jqXHR, textStatus, err){
+                        alert('text status '+textStatus+', err '+err);
+                    }
+                });
+
+        }, 
+        error: function(jqXHR, textStatus, err){
+            alert('text status '+textStatus+', err '+err);
+        }
+    });
+
+     $.ajax({ 
+        url: '/getcomment',
+        type: 'GET',
+        data:{"articleid":value},
+        cache: false, 
+        success: function(data){
+           // console.log(data);
+            let str="";
+            let replay=[];
+            data.result.forEach(element => {
+                if(element.parent_id!=0){
+                  replay.push(element);
+                }
+            });
+
+            data.result.forEach(element => {
+                if(element.parent_id==0){
+                    str+='<div class="col-md-12" data-id='+element.id+'>'
+                        +'<div class="float-left">'
+                        +'<img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">'
+                        +'</div>'
+                        +'<div class="float-left">'
+                        +'<p class="h6">'+element.message_name+'表示:<br/>'
+                        +'<small class="text-muted">'+formatDateTime(new Date(element.message_date))+'</small>'
+                        +'</p>'
+                        +'<p class="">'+element.content
+                        +'<br/><small><a href="#" onclick="replay($(this))" class="text-decoration-none">回覆</a></small>'
+                        +'</p>'                    
+                        +'</div>'
+                        +'</div>'
+
+                        replay.forEach(e => {
+                            if(element.id==e.parent_id){
+                                str+='<div class="col-md-8 offset-md-2 px-0" data-id='+e.id+'>'
+                                +'<div class="float-left">'
+                                +' <img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">'
+                                +'</div>'
+                                +'<div class="float-left">'
+                                +'<p class="h6">'+e.message_name+'表示:<br/>'
+                                +'<small class="text-muted">'+formatDateTime(new Date(e.message_date))+'</small>'
+                                +'</p class="h6">'
+                                +'<p class="">'+e.content
+                                +'</p>'
+                                +'</div>'
+                                +'</div>'
+                            
+
+                            }
+                        });
+                       
+                }
+
+            });
+
+           $("#commentblock").html(str);
+            
+        }, 
+        error: function(jqXHR, textStatus, err){
+            alert('text status '+textStatus+', err '+err);
+        }
+    });
+
+
+   function message(date) {
+
+        var parentid=date.parent().parent().parent().parent().attr("data-id");
+
+        if(parentid==null){
+            parentid=0;
+        }
+        var formData={
+            articleid:value,
+            parentid:parentid,
+            name:$("#commentname").val(),
+            eamil:$("#commentemail").val(),
+            content:$("#commentcontent").val()
+        }
+     
+        
+        $.ajax({ 
+        url: '/postcomment',
+        type: 'POST',
+        cache: false, 
+        data: formData,
+        success: function(data){
+            // alert('Success!'+data.result.code);
+            alert("新增成功");
+            $.ajax({ 
+        url: '/getcomment',
+        type: 'GET',
+        data:{"articleid":value},
+        cache: false, 
+        success: function(data){
+             // console.log(data);
+            let str="";
+            let replay=[];
+            data.result.forEach(element => {
+                if(element.parent_id!=0){
+                  replay.push(element);
+                }
+            });
+
+            data.result.forEach(element => {
+                if(element.parent_id==0){
+                    str+='<div class="col-md-12" data-id='+element.id+'>'
+                        +'<div class="float-left">'
+                        +'<img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">'
+                        +'</div>'
+                        +'<div class="float-left">'
+                        +'<p class="h6">'+element.message_name+'表示:<br/>'
+                        +'<small class="text-muted">'+formatDateTime(new Date(element.message_date))+'</small>'
+                        +'</p>'
+                        +'<p class="">'+element.content
+                        +'<br/><small><a href="#" onclick="replay($(this))" class="text-decoration-none">回覆</a></small>'
+                        +'</p>'                    
+                        +'</div>'
+                        +'</div>'
+
+                        replay.forEach(e => {
+                            if(element.id==e.parent_id){
+                                str+='<div class="col-md-8 offset-md-2 px-0" data-id='+e.id+'>'
+                                +'<div class="float-left">'
+                                +' <img  class="mr-3" src="https://picsum.photos/80" alt="替代文字一" title="範例圖片一">'
+                                +'</div>'
+                                +'<div class="float-left">'
+                                +'<p class="h6">'+e.message_name+'表示:<br/>'
+                                +'<small class="text-muted">'+formatDateTime(new Date(e.message_date))+'</small>'
+                                +'</p class="h6">'
+                                +'<p class="">'+e.content
+                                +'</p>'
+                                +'</div>'
+                                +'</div>'
+                            
+
+                            }
+                        });
+                       
+                }
+
+            });
+
+           $("#commentblock").html(str);
+            
+        }, 
+        error: function(jqXHR, textStatus, err){
+            alert('text status '+textStatus+', err '+err);
+        }
+    });
+
+
+
+        }, 
+        error: function(jqXHR, textStatus, err){
+            alert('text status '+textStatus+', err '+err);
+        }
+        })
+        
+        //清空資料
+        $("#commentname").val(""),
+        $("#commentemail").val(""),
+        $("#commentcontent").val("")
+
+   };
+
+  var formatDateTime = function (date) {  
+    var y = date.getFullYear();  
+    var m = date.getMonth() + 1;  
+    m = m < 10 ? ('0' + m) : m;  
+    var d = date.getDate();  
+    d = d < 10 ? ('0' + d) : d;  
+    var h = date.getHours();  
+    var minute = date.getMinutes();  
+    minute = minute < 10 ? ('0' + minute) : minute;  
+    return y + '-' + m + '-' + d+' '+h+':'+minute;  
+}; 
+
+ function replay (date) {  
+  
+    if(date.attr("data-status")!="open"){
+        $("#messageblock").clone().appendTo(date.parent().parent().parent());
+        date.attr("data-status","open");
+    }
+   
+    
+}; 
+
+
+</script>

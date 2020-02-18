@@ -1,0 +1,78 @@
+<div class="container-fluid">
+    <div class="bg-white mt-5 ">
+        <h5 class="text-primary" style="padding: 10px 15px;"><i class="fas fa-th-list"></i>  訪客記錄資訊</h5>
+        <hr style="margin-top: -5px;">
+        <div>
+                <div class="row">
+                    <div class="col-md-11  ml-5">
+                        <table id="table_id" class="table">
+                            <thead>
+                                <tr>
+                                    <th></th> 
+                                    <th>IP</th>
+                                    <th>瀏覽時間</th>
+                                    <th>使用裝置</th>
+                                    <th>動作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>     
+                </div>
+            
+       
+            
+            <hr>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+$(document).ready( function () {
+
+        table=$('#table_id').DataTable({
+  "bProcessing": true,
+  "sAjaxSource": "/getguestinfo",
+  "aoColumns": [
+      { "mData": "id", "sWidth": '10%'},
+      { "mData": "ip", "sWidth": '30%'},
+      { "mData": "enter_date", "sWidth": '30%'},
+      { "mData": "device", "sWidth": '20%'},
+      { "mData": "id", "sWidth": '10%',
+
+      "mRender":function(val,type,row) {
+          
+          return " &nbsp";
+        }
+  
+  
+  
+      }
+  ],
+  "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+      $(nRow).attr("data-id",aData.ser);
+      return nRow;
+  },
+  "language": {
+      "processing": "資料載入中...",
+      "lengthMenu": "每頁顯示 _MENU_ 筆",
+      "zeroRecords": "資料庫中未有相關資料。",
+      "info": "第 _PAGE_ 頁，共 _PAGES_ 頁",
+      "infoEmpty": "資料庫中未有相關資料。",
+      "search":  "搜尋:",
+      "paginate": {
+            "first":      "第一頁",
+            "last":       "最後一頁",
+            "next":       "下一頁",
+            "previous":   "上一頁"
+        }
+  }
+});
+} );
+
+
+
+
+
+</script>

@@ -1,0 +1,46 @@
+<div id="sidebar" class="position-fixed">
+    <button id="optbt" class="btn my-2 my-sm-0 " style="color: #fff;z-index: 999;margin-left: 250px;">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="sidebar-header">
+        <h3>Dashboard</h3>
+        <hr>
+    </div>
+
+    <ul class="nav flex-column nav-pills">
+
+        <li class="nav-item ml-2">
+           <a class="nav-link text-secondary" href="/admin/add"><i class="fas fa-pencil-alt"></i>  新增文章</a>
+        </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link text-secondary" href="/admin/about"><i class="fas fa-pencil-alt"></i>  編輯關於頁</a>
+         </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link text-secondary" href="/admin/listarticle"><i class="fas fa-list-alt"></i>  文章列表</a>
+        </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link text-secondary" href="/admin/schedulearticle"><i class="far fa-clock"></i>  排程發佈文章</a>
+        </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link text-secondary" href="/admin/viewrecord"><i class="fas fa-chart-bar"></i>  觀看點閱數</a>
+        </li>
+        <li class="nav-item ml-2">
+            <a class="nav-link text-secondary" href="/admin/guestrecord"><i class="fas fa-chart-bar"></i>  訪客紀錄</a>
+        </li>
+    </ul>
+</div>
+
+<style>
+#sidebar {
+    width:250px;
+    /* min-width: 210px;  */
+    /* max-width: 250px; */
+    /* background:#fff; */
+    color: #000000;
+    min-height: 100vh;
+}
+.sidebar-header{
+    margin-left: 20px;
+    padding-top:50px;
+}
+</style>
